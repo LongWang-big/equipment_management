@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxx.equipment.mapper.InventoryMapper">
+
+    <resultMap id="inventoryVOResultMap" type="com.xxx.equipment.vo.InventoryVO">
+        <id property="id" column="id"/>
+        <result property="deviceId" column="device_id"/>
+        <result property="deviceName" column="device_name"/>
+        <result property="quantity" column="quantity"/>
+        <result property="status" column="status"/>
+        <result property="warningValue" column="warning_value"/>
+        <result property="location" column="location"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="selectPageWithDeviceName" resultMap="inventoryVOResultMap">
+        SELECT i.id, i.device_id, d.device_name, i.quantity, i.status,
+               i.warning_value, i.location, i.update_time
+        FROM inventory i
+        LEFT JOIN device d ON i.device_id = d.id
+        ORDER BY i.update_time DESC
+    </select>
+
+    <select id="selectWarningList" resultMap="inventoryVOResultMap">
+        SELECT i.id, i.device_id, d.device_name, i.quantity, i.status,
+               i.warning_value, i.location, i.update_time
+        FROM inventory i
+        LEFT JOIN device d ON i.device_id = d.id
+        WHERE i.quantity &lt; i.warning_value
+        ORDER BY i.quantity ASC
+    </select>
+
+</mapper>

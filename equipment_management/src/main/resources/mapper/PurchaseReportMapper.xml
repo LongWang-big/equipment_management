@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxx.equipment.mapper.PurchaseReportMapper">
+
+    <select id="selectMonthlyReport" resultType="com.xxx.equipment.vo.PurchaseReportVO">
+        SELECT
+            d.device_name                              AS deviceName,
+            SUM(po.purchase_quantity)                  AS purchaseQuantity,
+            SUM(po.total_amount)                       AS totalAmount,
+            DATE_FORMAT(po.purchase_date, '%Y-%m')     AS yearMonth
+        FROM purchase_order po
+        LEFT JOIN device d ON po.device_id = d.id
+        WHERE DATE_FORMAT(po.purchase_date, '%Y') = #{year}
+        GROUP BY po.device_id, yearMonth
+        ORDER BY yearMonth, deviceName
+    </select>
+
+    <select id="selectYearlyReport" resultType="com.xxx.equipment.vo.PurchaseReportVO">
+        SELECT
+            d.device_name                              AS deviceName,
+            SUM(po.purchase_quantity)                  AS purchaseQuantity,
+            SUM(po.total_amount)                       AS totalAmount,
+            DATE_FORMAT(po.purchase_date, '%Y')        AS year
+        FROM purchase_order po
+        LEFT JOIN device d ON po.device_id = d.id
+        WHERE DATE_FORMAT(po.purchase_date, '%Y') = #{year}
+        GROUP BY po.device_id, year
+        ORDER BY deviceName
+    </select>
+
+</mapper>
